@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pinball Winnings - Pixi.js</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a1a;
+      color: #ffffff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #root {
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .header h1 {
+      font-size: 3.5rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+      text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+    }
+
+    .header p {
+      color: #d1d5db;
+      font-size: 1.1rem;
+      margin-top: 10px;
+    }
+
+    .main-content {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .left-panel {
+      flex: 0 0 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .right-panel {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .winnings-box {
+      background: #2d2d2d;
+      border-radius: 12px;
+      padding: 25px;
+      border: 1px solid #404040;
+    }
+
+    .winnings-label {
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .winnings-amount {
+      color: #22c55e;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 15px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #ffffff;
+      background: #3d3d3d;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: #4d4d4d;
+    }
+
+    .btn:disabled {
+      background: #2a2a2a;
+      color: #666666;
+      cursor: not-allowed;
+    }
+
+    .game-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 9/16;
+      background: #2d2d2d;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #404040;
+    }
+
+    #game-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .ball-selector-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .ball-selector-modal {
+      background: #2d2d2d;
+      border-radius: 16px;
+      border: 1px solid #404040;
+      max-width: 600px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .ball-selector-header {
+      background: #3a3a3a;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .ball-selector-header h2 {
+      font-size: 1.75rem;
+      font-weight: bold;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    .ball-selector-grid {
+      padding: 30px;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 15px;
+    }
+
+    .ball-option {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .ball-option:hover {
+      transform: scale(1.2);
+    }
+
+    .ball-option.selected {
+      border: 4px solid #fbbf24;
+      transform: scale(1.2);
+    }
+
+    .win-message {
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      color: #fbbf24;
+      text-align: center;
+      padding: 15px;
+      border-radius: 12px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .round-over-box {
+      background: #1e3a5f;
+      border: 1px solid #2d5a8a;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .round-over-box h3 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .round-over-box p {
+      color: #e0e0e0;
+      margin: 5px 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+      .left-panel {
+        flex: 1;
+      }
+      .header h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="container">
+      <div class="header">
+        <h1>Pinball Winnings</h1>
+        <p>Choose a ball, drop them all, and watch your fortune grow!</p>
+      </div>
+      <div class="main-content">
+        <div class="left-panel">
+          <div class="winnings-box">
+            <div class="winnings-label">TOTAL WINNINGS</div>
+            <div class="winnings-amount" id="winnings-amount">$0</div>
+          </div>
+          <div id="win-message-container"></div>
+          <div class="button-group">
+            <button class="btn" id="drop-balls-btn">DROP BALLS</button>
+            <button class="btn" id="reset-btn">RESET GAME</button>
+          </div>
+          <div id="round-over-container"></div>
+        </div>
+        <div class="right-panel">
+          <div class="game-container">
+            <div id="game-canvas"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ball Selector Modal (hidden by default) -->
+  <div id="ball-selector" class="ball-selector-overlay hidden">
+    <div class="ball-selector-modal">
+      <div class="ball-selector-header">
+        <h2>Choose Your Ball</h2>
+      </div>
+      <div class="ball-selector-grid" id="ball-grid">
+        <!-- Balls will be generated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

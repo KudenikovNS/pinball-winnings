@@ -1,0 +1,22 @@
+{
+  "name": "pinball-winnings-pixi",
+  "version": "1.0.0",
+  "description": "Pinball Winnings game rebuilt with Pixi.js and thing-editor",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "pixi.js": "^8.5.2",
+    "matter-js": "^0.20.0"
+  },
+  "devDependencies": {
+    "@types/matter-js": "^0.19.7",
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
