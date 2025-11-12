@@ -2,6 +2,8 @@
 
 Игра Pinball Winnings на Pixi.js + Matter.js + TypeScript.
 
+🎮 **[Играть онлайн](https://kudenikovns.github.io/pinball-winnings/)**
+
 ## Установка
 
 ```bash
